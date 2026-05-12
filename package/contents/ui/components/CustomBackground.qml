@@ -119,7 +119,7 @@ Rectangle {
     property bool panelTouchingLeft: isPanel && main.panelElement && !main.panelIsFloating && main.panelPosition.location === "left"
     property bool panelTouchingRight: isPanel && main.panelElement && !main.panelIsFloating && main.panelPosition.location === "right"
 
-    property var hideCfg: main.hiddenWidgets.widgets.find(widget => widget.id === widgetId && widget.name === widgetName)
+    property var hideCfg: main.isEnabled ? main.hiddenWidgets.widgets.find(widget => widget.id === widgetId && widget.name === widgetName) : undefined
     property bool shouldHide: hideCfg?.hide ?? false
     property var widgetStatus: rect.target.applet?.plasmoid?.status ?? null
     property bool isHidden: widgetStatus === PlasmaCore.Types.HiddenStatus

@@ -250,33 +250,33 @@ PlasmoidItem {
                 reconfigure();
             }, main);
         });
+        updatePanelVisibility();
     }
 
-    Binding {
-        target: main.panelView
-        property: "visible"
-        value: {
-            if (!main.isEnabled) {
-                return true;
-            }
-            if (main.editMode) {
-                return true;
-            }
-            if (main.stockPanelSettings.visible.enabled) {
-                return main.stockPanelSettings.visible.value;
-            }
-            if (main.cfg.nativePanel.hideWhenNoWidgetsAreVisible ?? false) {
-                return main.widgetTypes.some(w => !w.hidden);
-            }
-            return true;
+    function updatePanelVisibility() {
+        if (!panelView)
+            return;
+        if (editMode || !isEnabled) {
+            panelView.visible = true;
+            return;
         }
-        when: main.panelView !== null
+        if (stockPanelSettings.visible.enabled) {
+            panelView.visible = stockPanelSettings.visible.value;
+            return;
+        }
+        if (cfg.nativePanel.hideWhenNoWidgetsAreVisible ?? false) {
+            panelView.visible = widgetTypes.some(w => !w.hidden);
+            return;
+        }
+        panelView.visible = true;
     }
 
     readonly property var stockPanelSettingsDeps: ({
             stockPanelSettings,
             isEnabled,
-            editMode
+            editMode,
+            hideWhenNoWidgetsAreVisible: main.cfg.nativePanel.hideWhenNoWidgetsAreVisible ?? false,
+            hasVisibleWidgets: widgetTypes.some(w => !w.hidden)
         })
 
     onStockPanelSettingsDepsChanged: Qt.callLater(applyStockPanelSettings)
