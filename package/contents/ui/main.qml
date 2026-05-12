@@ -607,7 +607,6 @@ PlasmoidItem {
         Utils.showWidgets(panelLayout, backgroundComponent, Plasmoid);
         updateCurrentWidgets();
         showPanelBg(panelBg);
-        updateContextualActions(configureFromAllWidgets);
         updateIslands();
     }
 
@@ -755,7 +754,7 @@ PlasmoidItem {
         id: configureAction
         text: Plasmoid.internalAction("configure").text
         objectName: "panelColorizerConfigureAction"
-        icon.name: 'configure'
+        icon.name: "configure"
         onTriggered: Plasmoid.internalAction("configure").trigger()
     }
 
@@ -764,26 +763,14 @@ PlasmoidItem {
     }
 
     function updateContextualActions(enabled) {
-        if (!main.panelLayout)
-            return;
-        for (var i in main.panelLayout.children) {
-            const child = main.panelLayout.children[i];
-            // may not be available while dragging into the panel and other situations
-            if (!child.applet?.plasmoid?.pluginName)
-                continue;
-
-            if (child.applet.Plasmoid.pluginName === Plasmoid.metaData.pluginId) {
-                continue;
+        Plasmoid.containment.contextualActions = Plasmoid.containment.contextualActions.filter(item => {
+            if (item && item.objectName === "panelColorizerConfigureAction") {
+                return false;
             }
-            child.applet.Plasmoid.contextualActions = child.applet.Plasmoid.contextualActions.filter(item => {
-                if (item && item.objectName === "panelColorizerConfigureAction") {
-                    return false;
-                }
-                return true;
-            });
-            if (enabled) {
-                child.applet.Plasmoid.contextualActions.push(configureAction);
-            }
+            return true;
+        });
+        if (enabled) {
+            Plasmoid.containment.contextualActions.push(configureAction);
         }
     }
 
@@ -817,6 +804,10 @@ PlasmoidItem {
         Utils.delay(500, () => {
             updateContextualActions(configureFromAllWidgets);
         }, main);
+    }
+
+    Component.onDestruction: {
+        updateContextualActions(false);
     }
 
     TasksModel {
