@@ -607,7 +607,7 @@ ColumnLayout {
         // preview
         TextArea {
             visible: (root.showFontConfig) && root.currentTab === 4
-            text: i18n("12345678900\nABCDEFGHIJKLMNOPQRSTUVWXYZ\nabcdefghijklmnopqrstuvwxyz")
+            text: "12345678900\nABCDEFGHIJKLMNOPQRSTUVWXYZ\nabcdefghijklmnopqrstuvwxyz"
             Kirigami.SpellCheck.enabled: false
             function reload() {
                 font.family = root.configLocal.fontConfig.font.familyOverride ? root.configLocal.fontConfig.font.family : Kirigami.Theme.defaultFont.family;
